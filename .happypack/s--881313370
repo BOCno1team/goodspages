@@ -1,0 +1,62 @@
+import _Promise from 'babel-runtime/core-js/promise';
+import _Object$defineProperties from 'babel-runtime/core-js/object/define-properties';
+import config from './http.default.config';
+
+import bfwConfig from './http.bfw.config.js';
+
+var vueHttp = {};
+
+vueHttp.install = function (Vue, axios) {
+  if (vueHttp.installed) {
+    return false;
+  }
+
+  if (!axios) {
+    return false;
+  }
+
+  vueHttp._settings(axios, config);
+
+  Vue.axios = axios;
+
+  var bfwInstance = axios.create();
+
+  vueHttp._settings(bfwInstance, bfwConfig);
+
+  _Object$defineProperties(Vue.prototype, {
+    axios: {
+      get: function get() {
+        return axios;
+      }
+    },
+    $http: {
+      get: function get() {
+        return axios;
+      }
+    },
+    $bfw: {
+      get: function get() {
+        return bfwInstance;
+      }
+    }
+  });
+};
+
+vueHttp._settings = function (axios, httpConfig) {
+  if (httpConfig.timeout) {
+    axios.defaults.timeout = httpConfig.timeout;
+  }
+  if (httpConfig.contentType) {
+    axios.defaults.headers.post['Content-Type'] = httpConfig.contentType;
+  }
+
+  axios.interceptors.request.use(httpConfig.reqInterceptors, function (error) {
+    return _Promise.reject(error);
+  });
+
+  axios.interceptors.response.use(httpConfig.resInterceptors, function (error) {
+    return _Promise.reject(error);
+  });
+};
+
+export default vueHttp;

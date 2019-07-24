@@ -1,15 +1,15 @@
-import qs from 'qs'
+  // mport qs from 'qs'
 
 const httpConfig = {
-  timeout: 5000,
-  contentType: 'application/x-www-form-urlencoded',
+  // timeout: 5000,
+  contentType: 'application/json',
   baseUrl: '',
 
   reqInterceptors: (config) => {
     // POST传参序列化
-    if (config.method === 'post') {
-      config.data = qs.stringify(config.data);
-    }
+    // if (config.method === 'post') {
+    //   config.data = qs.stringify(config.data);
+    // }
     return config;
   },
 

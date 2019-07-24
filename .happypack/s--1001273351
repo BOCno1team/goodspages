@@ -1,0 +1,93 @@
+import _Object$defineProperties from 'babel-runtime/core-js/object/define-properties';
+import md5 from 'md5';
+
+var CommonUtil = {};
+
+CommonUtil.getResData = function (res) {
+  if (CommonUtil.isSuccess(res)) {
+    return res.data.result;
+  } else {}
+};
+
+CommonUtil.getErr = function (res) {
+  if (!CommonUtil.isSuccess(res)) {
+    return {
+      code: res.data.code,
+      message: res.data.message
+    };
+  }
+};
+
+CommonUtil.isSuccess = function (res) {
+  var flag = res.data._isException_;
+  return !flag;
+};
+
+CommonUtil.isOK = function (res) {
+  if (!res.data.returnCode) {
+    return false;
+  }
+  if (res.data.returnCode === '000000') {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+CommonUtil.isOK = function (res) {
+  if (!res.statusText) {
+    return false;
+  }
+  if (res.statusText === 'OK') {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+CommonUtil.datetimeFormat = function (original_date) {
+  if (!original_date || original_date === '') {
+    return null;
+  }
+  var year = original_date.getFullYear();
+  var month = original_date.getMonth() + 1;
+  month = month < 10 ? '0' + month : month;
+  var date = original_date.getDate() < 10 ? '0' + original_date.getDate() : original_date.getDate();
+  var hour = original_date.getHours() < 10 ? '0' + original_date.getHours() : original_date.getHours();
+  var minute = original_date.getMinutes() < 10 ? '0' + original_date.getMinutes() : original_date.getMinutes();
+  var second = original_date.getSeconds() < 10 ? '0' + original_date.getSeconds() : original_date.getSeconds();
+  var format_date = year + '年' + month + '月' + date + '日' + hour + ':' + minute + ':' + second;
+  return format_date;
+};
+
+CommonUtil.dateFormat = function (original_date, status) {
+  if (!original_date || original_date === '') {
+    return null;
+  }
+  var year = original_date.getFullYear();
+  var month = original_date.getMonth() + 1;
+  month = month < 10 ? '0' + month : month;
+  var date = original_date.getDate() < 10 ? '0' + original_date.getDate() : original_date.getDate();
+  var format_date = '';
+  if (status === 'addUnit') {
+    format_date = year + '年' + month + '月' + date + '日';
+  } else {
+    format_date = year + month + date;
+  }
+
+  return format_date;
+};
+
+CommonUtil.md5 = md5;
+
+CommonUtil.install = function (Vue) {
+  _Object$defineProperties(Vue.prototype, {
+    $CU: {
+      get: function get() {
+        return CommonUtil;
+      }
+    }
+  });
+};
+
+export default CommonUtil;

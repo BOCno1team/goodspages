@@ -1,0 +1,23 @@
+import _defineProperty from 'babel-runtime/helpers/defineProperty';
+
+var _types$SAVE_TOKEN$typ;
+
+import * as types from './mutation-types';
+
+export default (_types$SAVE_TOKEN$typ = {}, _defineProperty(_types$SAVE_TOKEN$typ, types.SAVE_TOKEN, function (state, token) {
+  state.token = token;
+}), _defineProperty(_types$SAVE_TOKEN$typ, types.SAVE_USER, function (state, user) {
+  state.user = user;
+}), _defineProperty(_types$SAVE_TOKEN$typ, types.LOGOUT, function (state) {
+  state.token = null;
+  state.user = {};
+}), _defineProperty(_types$SAVE_TOKEN$typ, types.SAVE_LOCALE, function (state, locale) {
+  state.locale = locale;
+}), _defineProperty(_types$SAVE_TOKEN$typ, types.SAVE_WARNFORM, function (state, getWarnForm) {
+  state.getWarnForm = getWarnForm;
+}), _defineProperty(_types$SAVE_TOKEN$typ, types.SAVE_FINANCIALFORM, function (state, financialForm) {
+  state.financialForm = financialForm;
+}), _defineProperty(_types$SAVE_TOKEN$typ, types.SAVE_INFOQUERY, function (state, infoQuery) {
+  state.infoQuery = {};
+  state.infoQuery = infoQuery;
+}), _types$SAVE_TOKEN$typ);

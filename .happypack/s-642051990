@@ -1,0 +1,13 @@
+export var SAVE_TOKEN = 'SAVE_TOKEN';
+
+export var SAVE_USER = 'SAVE_USER';
+
+export var LOGOUT = 'LOGOUT';
+
+export var SAVE_LOCALE = 'SAVE_LOCALE';
+
+export var SAVE_WARNFORM = 'SAVE_WARNFORM';
+
+export var SAVE_FINANCIALFORM = 'SAVE_FINANCIALFORM';
+
+export var SAVE_INFOQUERY = 'SAVE_INFOQUERY';
