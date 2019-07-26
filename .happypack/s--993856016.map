@@ -1,1 +1,0 @@
-{"version":3,"sources":["src\\i18n\\zh.js"],"names":["menu","home","topbar","changelan"],"mappings":"AAAA,eAAe;AACbA,QAAM;AACJC,UAAM;AADF,GADO;AAIbC,UAAQ;AACNC,eAAW;AADL;AAJK,CAAf","file":"zh.js","sourceRoot":"D:/goods/goodspages","sourcesContent":["export default {\n  menu: {\n    home: '首页'\n  },\n  topbar: {\n    changelan: 'English'\n  }\n}\n"]}

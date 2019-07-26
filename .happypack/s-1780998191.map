@@ -1,1 +1,0 @@
-{"version":3,"sources":["src\\i18n\\en.js"],"names":["menu","home","topbar","changelan"],"mappings":"AAAA,eAAe;AACbA,QAAM;AACJC,UAAM;AADF,GADO;AAIbC,UAAQ;AACNC,eAAW;AADL;AAJK,CAAf","file":"en.js","sourceRoot":"d:/goods/goodspages","sourcesContent":["export default {\n  menu: {\n    home: 'Home'\n  },\n  topbar: {\n    changelan: '中文'\n  }\n}\n"]}

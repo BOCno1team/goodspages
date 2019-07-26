@@ -147,11 +147,11 @@ export default {
     }
   },
   beforeMount() {
+    //send request before render
     const demanderData = JSON.parse(this.$route.query.supplyDemand)
     demanderData.DemandList.map(item => {
       this.demandGoods = item.demandId
     })
-    console.log(this.demandGoods)
     this.demander = demanderData.DemanderId
     this.profitableSupplyList = demanderData.ProfitableSupplyList
     this.unprofitableSupplyList = demanderData.UnprofitableSupplyList
@@ -159,10 +159,10 @@ export default {
   },
   methods: {
     supplyDemand() {
+      //Click the button to jump to another page and send attributes
       this.$router.push({path: "/workGroup", query: {
         DemandID: JSON.stringify(this.demandGoods)
       }})
-      console.log(DemandID)
     }
   }
 }

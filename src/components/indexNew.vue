@@ -2,7 +2,7 @@
   <div class="wrapper-body" v-loading="loading" element-loading-text="拼命提交中..." element-loading-background="rgba(0, 0, 0, 0.8)">
     <el-tabs class="warnTabs" v-model="activeName2" type="card" @tab-click="handleClick" v-if='isWrapperForm'>
         <el-tab-pane label="供给物品/Supply" name="first" class="warn-tab-pane">
-          <el-form :model="supplyForm" :rules="rules" ref="supplyForm" label-width="200px" class="demo-ruleForm">
+          <el-form :model="supplyForm" ref="supplyForm" label-width="200px" class="demo-ruleForm">
             <div class="row supply-title" size="medium">
               <div class="col-md-12 col">
                 <el-form-item label="供给方名称/Supplier Name" prop="supplyName">
@@ -57,7 +57,7 @@
         </el-tab-pane>
         <!-- 需求方信息页面  -->
         <el-tab-pane label="需求物品/Demand" name="second">
-          <el-form :model="demandForm" :rules="demanRrules" ref="demandForm" label-width="230px" class="demo-ruleForm">
+          <el-form :model="demandForm" ref="demandForm" label-width="230px" class="demo-ruleForm">
             <div class="row supply-title">
               <div class="col-md-4 col">
                 <el-form-item label="需求方ID/Demander ID" prop="DemanderId">
@@ -128,31 +128,6 @@ export default {
           unitPrice: ''
         }]
       },
-      rules: {
-        // supplyName: [
-        //   { required: true, message: '请输入供给方名称', trigger: 'blur' }
-        // ],
-        // provider: [
-        //   { required: true, message: '请输入供给方ID', trigger: 'blur' }
-        // ]
-        // supplyFormList: [
-        //   {name: [
-        //     { required: true, message: '请选择活动区域', trigger: 'change' }
-        //   ]},
-        //   {supplyId: [
-        //     { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-        //   ]},
-        //   {amount: [
-        //     { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
-        //   ]},
-        //   {unit: [
-        //     { required: true, message: '请选择活动资源', trigger: 'change' }
-        //   ]},
-        //   {unitPrice: [
-        //     { required: true, message: '请填写活动形式', trigger: 'blur' }
-        //   ]}
-        // ]
-      },
       demandForm: {
         DemanderId: '',
         demandFormList: [{
@@ -162,27 +137,6 @@ export default {
           amount: '',
           unit: ''
         }]
-      },
-      demanRrules: {
-        // category: [
-        //   { required: true, message: '请输入活动名称', trigger: 'blur' },
-        //   { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-        // ],
-        // name: [
-        //   { required: true, message: '请选择活动区域', trigger: 'change' }
-        // ],
-        // DemanderId: [
-        //   { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-        // ],
-        // demandId: [
-        //   { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-        // ],
-        // amount: [
-        //   { type: 'Number', required: true, message: '请输入一个整数', trigger: 'change' }
-        // ],
-        // unit: [
-        //   { required: true, message: '请选择活动资源', trigger: 'change' }
-        // ]
       }
     }
   },
@@ -200,6 +154,7 @@ export default {
     submitSupplyForm() {
       this.$refs.supplyForm.validate((valid) => {
         if (valid) {
+          //send supply message
           this.loading = true
           let newProvider = {
             supplyName: this.supplyForm.supplyName,
@@ -212,6 +167,7 @@ export default {
           this.axios.post('/awp/HelloServlet', newProvider)
           .then(res => {
             if (this.$CU.isOK(res)) {
+              //receive feedback
               this.loading = false
               this.$alert('提交成功', '提示', {
                 confirmButtonText: '确定',
@@ -227,7 +183,6 @@ export default {
             }
           })
           .catch(err => {
-            console.log(err)
             this.loading = false
             this.$alert('请求失败! ' + err, '提示', {
               confirmButtonText: '确定',
@@ -240,9 +195,11 @@ export default {
       });
     },
     resetSupplyForm() {
+      // reset the supply form
       this.$refs.supplyForm.resetFields();
     },
     deleteSupplyForm() {
+      //delete the redundant form
       this.supplyForm.supplyFormList.pop({
         name: '',
         supplyId: '',
@@ -252,6 +209,7 @@ export default {
       })
     },
     addDemandForm() {
+      // add a demand form
       this.demandForm.demandFormList.push({
         name: '',
         category: '',
@@ -261,6 +219,7 @@ export default {
       })
     },
     submitDemandForm() {
+      // submit the demand form
       this.$refs.demandForm.validate((valid) => {
         if (valid) {
           this.loading = true
@@ -299,16 +258,16 @@ export default {
             });
           })
         } else {
-          // console.log('error submit!!');
           return false;
         }
       });
     },
     resetDemandForm() {
+      // reset the demand form
       this.$refs.demandForm.resetFields();
     },
     deleteDemandForm(item,index) {
-      console.log(item,index)
+      //delete the redundant form
       this.demandForm.demandFormList.pop({
         name: '',
         category: '',

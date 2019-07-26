@@ -7,10 +7,10 @@
           <div class="row seconds-title">
             <div class="col-md-12 col supplierInfo">
               <el-form-item label="供应信息/Supply Information">
-                <button>OrgID：501</button>
-                <button>Org Name：Red Cross</button>
-                <button>bread</button>
-                <button>200kg</button>
+                <button>OrgID：{{supOrgId}}</button>
+                <button>OrgName：{{supOrgName}}</button>
+                <button>{{supOrgGoods}}</button>
+                <button>{{supOrgAmount}}{{supOrgUnit}}</button>
               </el-form-item>
             </div>
             <div class="col-md-4 col">
@@ -65,6 +65,14 @@
       <el-tab-pane label="需求方指标评价/Demander Indicator Evaluation" name="second" v-if="damanderHidden">
         <el-form :model="damanderForm" ref="damanderForm" label-width="250px" class="demo-ruleForm">
           <div class="row seconds-title">
+            <div class="col-md-12 col supplierInfo">
+              <el-form-item label="需求信息/Demand Information">
+                <button>OrgID：{{demOrgId}}</button>
+                <button>OrgName：{{demOrgName}}</button>
+                <button>{{demOrgGoods}}</button>
+                <button>{{demOrgAmount}}{{demOrgUnit}}</button>
+              </el-form-item>
+            </div>
             <div class="col-md-4 col">
               <el-form-item label="准确验收/Accurate Acceptance">
                 <el-rate
@@ -117,6 +125,14 @@
       <el-tab-pane label="实施方指标评价/Executor Indicator Evaluation" name="three" v-if="implementationHidden">
         <el-form :model="implementationForm" ref="implementationForm" label-width="250px" class="demo-ruleForm">
           <div class="row seconds-title">
+            <div class="col-md-12 col supplierInfo">
+              <el-form-item label="实施信息/Execution Information">
+                <button>OrgID：{{supOrgId}}</button>
+                <button>OrgName：{{supOrgName}}</button>
+                <button>{{supOrgGoods}}</button>
+                <button>{{supOrgAmount}}{{supOrgUnit}}</button>
+              </el-form-item>
+            </div>
             <div class="col-md-4 col">
               <el-form-item label="实施质量/Implementation Quality">
                 <el-rate
@@ -180,7 +196,24 @@ export default {
       supplierHidden: true,
       damanderHidden: true,
       implementationHidden: true,
-      supplierForm: {
+      supplierForm: { 
+        materialQuality: null, 
+        supplySpeed: null, 
+        accurateInfo: null, 
+        Delivery: null, 
+        qualityService: null 
+      }, 
+      supOrgId: '',
+      supOrgName: '',
+      supOrgGoods: '',
+      supOrgUnit: '',
+      supOrgAmount: '',
+      demOrgId: '',
+      demOrgName: '',
+      demOrgGoods: '',
+      demOrgUnit: '',
+      demOrgAmount: '',
+      demplierForm: {
         materialQuality: null,
         supplySpeed: null,
         accurateInfo: null,
@@ -204,70 +237,120 @@ export default {
     }
   },
   beforeMount() {
-    const demanderID = JSON.parse(this.$route.query.DemanderID)
-    console.log(demanderID)
-  },
-  methods: {
-    handleClick() {},
-    checkUserId(id) {
-      if(id === '1') {
-        this.loading = true
-        this.supplierHidden = false
-        this.axios.post('/awp/CommentServlet', this.supplierForm)
-        .then(res => {
-          if (this.$CU.isOK(res)) {
-            this.loading = false
-            this.$alert('提交成功', '提示', {
-              confirmButtonText: '确定',
-              type: 'success'
-            });
-            this.reload()
-          } else {
-            this.loading = false
-            this.$alert('暂无数据', '提示', {
-              confirmButtonText: '确定',
-              type: 'info'
-            });
+    const demandID = JSON.parse(this.$route.query.DemandID)
+    this.axios.post('/awp/CommentServlet', {demandId: demandID})
+    .then(res => {
+      if (this.$CU.isOK(res)) {
+        // Verify the rule of current participant before render
+        res.data.resultArray.map(item => {
+          if(item.orgType === 'demander') {
+            this.damanderHidden = false
+          }else if(item.orgType === 'provider') {
+            this.supplierHidden = false
           }
-        })
-        .catch(err => {
-          this.loading = false
-          this.$alert('请求失败! ' + err, '提示', {
-            confirmButtonText: '确定',
-            type: 'error'
-          });
-        })
-      } else if(id === '2') {
-        this.loading = true
-        this.damanderHidden = false
-        this.axios.post('/awp/CommentServlet', this.damanderForm)
-        .then(res => {
-          if (this.$CU.isOK(res)) {
-            this.loading = false
-            this.$alert('提交成功', '提示', {
-              confirmButtonText: '确定',
-              type: 'success'
-            });
-            this.reload()
-          } else {
-            this.loading = false
-            this.$alert('暂无数据', '提示', {
-              confirmButtonText: '确定',
-              type: 'info'
-            });
-          }
-        })
-        .catch(err => {
-          this.loading = false
-          this.$alert('请求失败! ' + err, '提示', {
-            confirmButtonText: '确定',
-            type: 'error'
-          });
+          this.supOrgId = item.orgId
+          this.supOrgName = item.orgName
+          this.supOrgGoods = item.supplyName
+          this.supOrgUnit = item.unit
+          this.supOrgAmount = item.supplyAmount
+          this.demOrgId = item.orgId
+          this.demOrgName = item.orgName
+          this.demOrgGoods = item.demandName
+          this.demOrgUnit = item.unit
+          this.demOrgAmount = item.demandAmount
         })
       } else {
-        if(id === '3') {
+        this.loading = false
+        this.$alert('暂无数据', '提示', {
+          confirmButtonText: '确定',
+          type: 'info'
+        });
+      }
+    })
+    .catch(err => {
+      this.loading = false
+      this.$alert('请求失败! ' + err, '提示', {
+        confirmButtonText: '确定',
+        type: 'error'
+      });
+    })
+  },
+  methods: {
+    // Due to server expiration, we couldn't debug
+    handleClick() {},
+    submitSupplyForm(){
+      //Submit supplier score
+      this.$refs.supplierForm.validate((valid) => {
+        if (valid) {
           this.loading = true
-          this.implementationHidden = false
+          this.axios.post('/awp/CommentServlet', this.supplierForm)
+          .then(res => {
+            if (this.$CU.isOK(res)) {
+              this.loading = false
+              this.$alert('提交成功', '提示', {
+                confirmButtonText: '确定',
+                type: 'success'
+              });
+              this.reload()
+            } else {
+              this.loading = false
+              this.$alert('暂无数据', '提示', {
+                confirmButtonText: '确定',
+                type: 'info'
+              });
+            }
+          })
+          .catch(err => {
+            this.loading = false
+            this.$alert('请求失败! ' + err, '提示', {
+              confirmButtonText: '确定',
+              type: 'error'
+            });
+          })
+        } else {
+          return false;
+        }
+      });
+    },
+    submitDamanderForm() {
+      //Submit demander score
+      this.$refs.damanderForm.validate((valid) => {
+        if (valid) {
+          this.loading = true
+          this.axios.post('/awp/CommentServlet', this.damanderForm)
+          .then(res => {
+            if (this.$CU.isOK(res)) {
+              this.loading = false
+              this.$alert('提交成功', '提示', {
+                confirmButtonText: '确定',
+                type: 'success'
+              });
+              this.reload()
+            } else {
+              this.loading = false
+              this.$alert('暂无数据', '提示', {
+                confirmButtonText: '确定',
+                type: 'info'
+              });
+            }
+          })
+          .catch(err => {
+            this.loading = false
+            this.$alert('请求失败! ' + err, '提示', {
+              confirmButtonText: '确定',
+              type: 'error'
+            });
+          })
+        } else {
+          return false;
+        }
+      });
+    },
+    submitImpleForm() {
+      //Submit executor score
+      this.$refs.implementationForm.validate((valid) => {
+        if (valid) {
+          this.loading = true
           this.axios.post('/awp/CommentServlet', this.implementationForm)
           .then(res => {
             if (this.$CU.isOK(res)) {
@@ -292,111 +375,11 @@ export default {
               type: 'error'
             });
           })
+        } else {
+          return false;
         }
-      }
+      });
     }
-    // submitSupplyForm(){
-    //   this.$refs.supplierForm.validate((valid) => {
-    //     if (valid) {
-    //       this.loading = true
-    //       this.axios.post('/awp/CommentServlet', this.supplierForm)
-    //       .then(res => {
-    //         if (this.$CU.isOK(res)) {
-    //           this.loading = false
-    //           this.$alert('提交成功', '提示', {
-    //             confirmButtonText: '确定',
-    //             type: 'success'
-    //           });
-    //           this.reload()
-    //         } else {
-    //           this.loading = false
-    //           this.$alert('暂无数据', '提示', {
-    //             confirmButtonText: '确定',
-    //             type: 'info'
-    //           });
-    //         }
-    //       })
-    //       .catch(err => {
-    //         this.loading = false
-    //         this.$alert('请求失败! ' + err, '提示', {
-    //           confirmButtonText: '确定',
-    //           type: 'error'
-    //         });
-    //       })
-    //     } else {
-    //       // console.log('error submit!!');
-    //       return false;
-    //     }
-    //   });
-    // },
-    // submitDamanderForm() {
-    //   this.$refs.damanderForm.validate((valid) => {
-    //     if (valid) {
-    //       this.loading = true
-    //       this.axios.post('/awp/CommentServlet', this.damanderForm)
-    //       .then(res => {
-    //         if (this.$CU.isOK(res)) {
-    //           this.loading = false
-    //           this.$alert('提交成功', '提示', {
-    //             confirmButtonText: '确定',
-    //             type: 'success'
-    //           });
-    //           this.reload()
-    //         } else {
-    //           this.loading = false
-    //           this.$alert('暂无数据', '提示', {
-    //             confirmButtonText: '确定',
-    //             type: 'info'
-    //           });
-    //         }
-    //       })
-    //       .catch(err => {
-    //         this.loading = false
-    //         this.$alert('请求失败! ' + err, '提示', {
-    //           confirmButtonText: '确定',
-    //           type: 'error'
-    //         });
-    //       })
-    //     } else {
-    //       // console.log('error submit!!');
-    //       return false;
-    //     }
-    //   });
-    // },
-    // submitImpleForm() {
-    //   this.$refs.implementationForm.validate((valid) => {
-    //     if (valid) {
-    //       this.loading = true
-    //       this.axios.post('/awp/CommentServlet', this.implementationForm)
-    //       .then(res => {
-    //         if (this.$CU.isOK(res)) {
-    //           this.loading = false
-    //           this.$alert('提交成功', '提示', {
-    //             confirmButtonText: '确定',
-    //             type: 'success'
-    //           });
-    //           this.reload()
-    //         } else {
-    //           this.loading = false
-    //           this.$alert('暂无数据', '提示', {
-    //             confirmButtonText: '确定',
-    //             type: 'info'
-    //           });
-    //         }
-    //       })
-    //       .catch(err => {
-    //         this.loading = false
-    //         this.$alert('请求失败! ' + err, '提示', {
-    //           confirmButtonText: '确定',
-    //           type: 'error'
-    //         });
-    //       })
-    //     } else {
-    //       // console.log('error submit!!');
-    //       return false;
-    //     }
-    //   });
-    // }
   }
 }
 </script>
